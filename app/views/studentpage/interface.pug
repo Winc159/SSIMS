@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 学生界面
+    link(rel="stylesheet" href="/styles/studentstyles/interface.css")
+  body.student-background
+    a(href="/login" class="back-button") 
+      img(src="/images/backbutton.png" alt="Back Button")
+    a(href="/student/support" class="support-link") 
+      img(src="/images/supportbutton.png" alt="Support Button")
+    .container
+      a(href="info" class="avatar-link")
+        img(src="/images/studentavatar.jpg" alt="Student Avatar")
+      .info
+        h2 王明小朋友
+        p 男生
+        p 11岁
+        p 自闭症
+        p 家住重庆市渝北区 
+      .buttons
+        a(href="/student/timetable" class="btn-link")
+          img(src="/images/timetablebutton.png" alt="Timetable button")
+        a(href="/student/report" class="btn-link")
+          img(src="/images/reportbutton.png" alt="Report button")

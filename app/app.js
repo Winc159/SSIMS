@@ -26,6 +26,26 @@ app.get("/login", function(req, res) {
     res.render("login");
 });
 
+// 创建一个 /studentinterface 路由来渲染登录页面
+app.get("/student/interface", function(req, res) {
+    res.render("studentpage/interface");
+});
+
+// 创建一个 /student/personal-info 路由来渲染个人信息修改页面
+app.get("/student/info", function(req, res) {
+    res.render("studentpage/info");
+});
+
+// 创建一个 /student/timetable 路由来渲染课程表页面
+app.get("/student/timetable", function(req, res) {
+    res.render("studentpage/timetable");
+});
+
+// 创建一个 /student/report 路由来渲染报告评估页面
+app.get("/student/report", function(req, res) {
+    res.render("studentpage/report");
+});
+
 // Start server on port 3000
 app.listen(3000,function(){
     console.log(`Server running at http://127.0.0.1:3000/`);
