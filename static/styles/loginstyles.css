@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  font-family: 'SimSun', Arial, sans-serif; /* 添加默认字体以获得更好的样式 */
+}
+
+.login-background {
+  position: absolute; /* 确保背景覆盖整个视口 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/login.gif') no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1; /* 将背景放置在其他内容之下 */
+}
+
+.other-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/images/other-background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1;
+}
+
+.login-box {
+  background-color: #CDDE84; /* 修改登录框的颜色 */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center; /* 使文本居中 */
+  color: #456D00; /* 修改字体颜色并添加分号 */
+  z-index: 1;
+}
+
+.login-box .top-image {
+  position: absolute;
+  top: 18%; /* 使图片底边与登录框顶部对齐，根据需要调整 */
+  left: 50%;
+  transform: translateX(-50%); /* 居中图片 */
+  width: 200px; /* 图片宽度与登录框宽度一致 */
+  height: auto;
+  z-index: 0;
+}
+
+.login-box input {
+  display: block;
+  width: calc(100% - 22px); /* 使输入框占据整个宽度减去内边距 */
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* 设置输入框圆角 */
+  background-color: #FAFFAF; /* 设置输入框背景颜色 */
+  font-family: 'SimSun', Arial, sans-serif;
+  color: #456D00; /* 设置输入框字体颜色 */
+  box-sizing: border-box; /* 确保 padding 和 border 包含在 width 中 */
+}
+
+.login-box input::placeholder {
+  color: #456D00; /* 设置输入框提示文本颜色 */
+  opacity: 1; /* 确保提示文本的可见性 */
+}
+
+.top-right-image {
+  position: absolute;
+  top: 5%;
+  right: 15%;
+  width: 150px; /* 固定宽度 */
+  height: auto; /* 保持比例 */
+  z-index: 0;
+}
+
+button {
+  background-color: #FAFFAF; /* 设置按钮背景颜色 */
+  color: #456D00; /* 设置按钮字体颜色 */
+  font-family: 'SimSun', Arial, sans-serif; /* 设置按钮字体 */
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 20px; /* 设置按钮两边半圆形 */
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e5e8a6; /* 添加悬停效果 */
+}

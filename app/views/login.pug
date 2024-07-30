@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 登录页面
+    link(rel="stylesheet" href="/styles/loginstyles.css")
+  body.login-background
+    .top-right-image
+      img(src="/images/cloud.png" alt="Top Right Image")
+    .login-box
+      img(src="/images/hellologin.png" alt="Top Image" class="top-image")
+      h1 欢迎使用学生信息管理系统
+      form(action="/login" method="post")
+        div
+          input(type="text" id="username" name="username" placeholder="请输入用户名" required)
+        div
+          input(type="password" id="password" name="password" placeholder="请输入密码" required)
+        div
+          button(type="submit") 注册
+        div
+          button(type="submit") 登录
