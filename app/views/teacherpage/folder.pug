@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 学生详细信息搜索
+    link(rel="stylesheet" href="/styles/teacherstyles/folder.css")
+  body.teacher-background
+    a(href="/teacher/interface" class="back-button")
+      img(src="/images/backbutton.png" alt="Back Button")
+    .container
+      h1 学生详细信息搜索
+      form(action="/student/search" method="get")
+        .search-box
+          input(type="text" placeholder="搜索姓名、住址、ID" id="searchInput")
+          button(type="submit")
+            img(src="/images/searchbutton.png" alt="Search Icon")
+      .table-container
+        table
+          thead
+            tr
+              th 姓名
+              th 出生日期
+              th 性别
+              th 住址
+              th 家长姓名
+              th 联系方式
+          tbody
+            // 假设数据从后端获取
+

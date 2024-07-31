@@ -1,0 +1,37 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 编辑课程表
+    link(rel="stylesheet" href="/styles/teacherstyles/edit.css")
+  body.teacher-background
+    a(href="/teacher/timetable" class="back-button")
+      img(src="/images/backbutton.png" alt="Back Button")
+    .container
+      h1 编辑课程表
+
+      h2 通过课程ID编辑
+      form(action="/teacher/edit-timetable-by-id" method="post")
+        div
+          label(for="courseId") 课程ID
+          input(type="text" id="courseId" name="courseId" required)
+        div
+          button(type="submit") 搜索
+
+      h2 添加/修改课程
+      form(action="/teacher/edittimetable" method="post")
+        div
+          label(for="date-time") 日期和时间
+          input(type="datetime-local" id="date-time" name="date-time")
+        div
+          label(for="courseName") 课程名字
+          input(type="text" id="courseName" name="courseName" required)
+        div
+          label(for="teacherName") 教师
+          input(type="text" id="teacherName" name="teacherName" required)
+        div
+          label(for="studentName") 学生
+          input(type="text" id="studentName" name="studentName" required)
+        div
+          button(type="submit") 保存

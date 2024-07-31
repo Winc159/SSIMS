@@ -19,3 +19,15 @@ body {
     background-size: cover;
     z-index: -1; /* 将背景放置在其他内容之下 */
   }
+
+  .back-button {
+    position: absolute;
+    top: 20px; /* 调整为合适的距离 */
+    left: 20px; /* 调整为合适的距离 */
+    z-index: 10; /* 确保在其他内容之上 */
+  }
+  
+  .back-button img {
+    width: 100px; /* 返回按钮的宽度 */
+    height: auto;
+  }

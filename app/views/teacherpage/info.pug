@@ -4,13 +4,13 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
     title 个人信息修改
-    link(rel="stylesheet" href="/styles/studentstyles/info.css")
-  body.student-background
-    a(href="/student/interface" class="back-button")
+    link(rel="stylesheet" href="/styles/teacherstyles/info.css")
+  body.teacher-background
+    a(href="/teacher/interface" class="back-button")
       img(src="/images/backbutton.png" alt="Back Button")
     .container
       h1 个人信息修改
-      form(action="/student/update-info" method="post")
+      form(action="/teacher/update-info" method="post")
         div
           label(for="name") 姓名
           input(type="text" id="name" name="name" value="王明" required)
@@ -23,10 +23,10 @@ html(lang="en")
           label(for="birthdate") 出生日期
           input(type="date" id="birthdate" name="birthdate" required)
         div
-          label(for="symptoms") 症状
+          label(for="symptoms") 课程
           input(type="text" id="symptoms" name="symptoms" value="自闭症" required)
         div
-          label(for="location") 辅导机构
+          label(for="location") 机构
           input(type="text" id="location" name="location" value="家住重庆市渝北区" required)
         div
           button(type="submit") 保存

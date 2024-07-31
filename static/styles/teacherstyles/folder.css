@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    font-family: 'SimSun', Arial, sans-serif;
+}
+
+.teacher-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/images/teacherpage.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    max-width: 800px;
+    width: 100%;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+}
+
+.search-box input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 20px 0 0 20px;
+    border: 1px solid #ccc;
+    border-right: none; /* 去除右边框，使按钮和输入框连在一起 */
+    background-color: #FAFFAF; /* 与按钮颜色匹配 */
+    color: #456D00; /* 输入框文字颜色 */
+}
+
+.search-box button {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 0 20px 20px 0;
+    background-color: #FAFFAF;
+    cursor: pointer;
+}
+
+.search-box button img {
+    width: 20px; /* 根据需要调整图标大小 */
+    height: 20px;
+}
+
+
+.results {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #CDDE84;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px; /* 调整为合适的距离 */
+    left: 20px; /* 调整为合适的距离 */
+    z-index: 10; /* 确保在其他内容之上 */
+}
+
+.back-button img {
+    width: 100px; /* 返回按钮的宽度 */
+    height: auto;
+}

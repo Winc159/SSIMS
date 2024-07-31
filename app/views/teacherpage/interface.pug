@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 老师界面
+    link(rel="stylesheet" href="/styles/teacherstyles/interface.css")
+  body.teacher-background
+    a(href="/login" class="back-button") 
+      img(src="/images/backbutton.png" alt="Back Button")
+    .container
+      a(href="/teacher/info" class="avatar-link")
+        img(src="/images/teacheravatar.jpg" alt="Teacher Avatar")
+      .info
+        h2 陈晨老师
+        p 男
+        p 27岁
+        p 擅长体育课
+        p 爱心康复机构
+        p 123-123-123 
+      .buttons
+        a(href="/teacher/timetable" class="btn-link")
+          img(src="/images/timetablebutton.png" alt="Timetable button")
+        a(href="/teacher/folder" class="btn-link")
+          img(src="/images/folderbutton.png" alt="Report button")

@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 课程表
+    link(rel="stylesheet" href="/styles/teacherstyles/timetable.css")
+  body.teacher-background
+    a(href="/teacher/interface" class="back-button")
+      img(src="/images/backbutton.png" alt="Back Button")
+    .container
+      h1 课程表
+      table
+        thead
+          tr
+            th 课程
+            th 时间
+            th 教师
+        tbody
+          tr
+            td 数学
+            td 9:00 - 10:00
+            td 张老师
+          tr
+            td 英语
+            td 10:00 - 11:00
+            td 李老师
+          <!-- 添加更多课程信息 -->
+      a(href="/teacher/edittimetable" class="edit-button")
+        img(src="/images/editbutton.png" alt="Edit Timetable")

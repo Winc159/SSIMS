@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    font-family: 'SimSun', Arial, sans-serif; /* 添加默认字体以获得更好的样式 */
+    }
+  
+    .student-background {
+      position: absolute; /* 确保背景覆盖整个视口 */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('/images/studentpage.jpg') no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1; /* 将背景放置在其他内容之下 */
+    }
+  
+    .container {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.5); /* 半透明背景 */
+    }
+
+    .back-button {
+        position: absolute;
+        top: 20px; /* 调整为合适的距离 */
+        left: 20px; /* 调整为合适的距离 */
+        z-index: 10; /* 确保在其他内容之上 */
+    }
+    
+    .back-button img {
+        width: 100px; /* 返回按钮的宽度 */
+        height: auto;
+    }
+
+    .info {
+        margin-bottom: 20px;
+      }
+      
+    .info h2 {
+    font-size: 36px; /* 增大标题字体大小 */
+    margin-bottom: 10px;
+    }
+    
+    .info p {
+    font-size: 24px; /* 增大正文字体大小 */
+    margin: 20px 0; /* 增加行距 */
+    line-height: 1.5; /* 增加行高 */
+    }
