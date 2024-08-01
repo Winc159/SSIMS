@@ -33,7 +33,7 @@ body {
   
   .login-box .top-image {
     position: absolute;
-    top: 20.5%; /* 使图片底边与登录框顶部对齐，根据需要调整 */
+    top: 15%; /* 使图片底边与登录框顶部对齐，根据需要调整 */
     left: 50%;
     transform: translateX(-50%); /* 居中图片 */
     width: 200px; /* 图片宽度与登录框宽度一致 */
@@ -95,5 +95,28 @@ body {
   
   a:hover {
     text-decoration: underline; /* 悬停时添加下划线 */
+  }
+
+  select {
+    display: block;
+    width: calc(100% - 22px); /* 使选择框占据整个宽度减去内边距 */
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* 设置选择框圆角 */
+    background-color: #FAFFAF; /* 设置选择框背景颜色 */
+    font-family: 'SimSun', Arial, sans-serif; /* 使用一致的字体 */
+    color: #456D00; /* 设置字体颜色 */
+    box-sizing: border-box; /* 确保 padding 和 border 包含在 width 中 */
+    -webkit-appearance: none; /* 移除默认样式（部分浏览器） */
+    -moz-appearance: none; /* 移除默认样式（部分浏览器） */
+    appearance: none; /* 移除默认样式（通用） */
+    cursor: pointer; /* 添加鼠标指针样式 */
+  }
+  
+  select:focus {
+    outline: none; /* 移除默认的聚焦样式 */
+    border-color: #456D00; /* 聚焦时边框颜色 */
+    box-shadow: 0 0 5px rgba(69, 109, 0, 0.5); /* 聚焦时的阴影效果 */
   }
   

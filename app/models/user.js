@@ -8,7 +8,7 @@ async function login(username, password) {
 
     // 如果没有找到用户，则抛出错误
     if (rows.length === 0) {
-      throw new Error('没找到该用户');
+      throw new Error('用户名或密码不正确');
     }
 
     const user = rows[0];
@@ -24,4 +24,25 @@ async function login(username, password) {
   }
 }
 
-module.exports = { login };
+async function register(username, password, user_type) {
+  try {
+    // 将用户信息插入数据库，直接存储明文密码
+    await query('INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)', [username, password, user_type]);
+  } catch (err) {
+    throw new Error('注册失败：' + err.message);
+  }
+}
+
+// calculate age
+function calculateAge(dob) {
+  const today = new Date();
+  const birthDate = new Date(dob);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+module.exports = { login, register, calculateAge };

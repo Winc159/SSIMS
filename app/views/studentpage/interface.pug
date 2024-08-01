@@ -14,11 +14,11 @@ html(lang="en")
       a(href="/student/info" class="avatar-link")
         img(src="/images/studentavatar.jpg" alt="Student Avatar")
       .info
-        h2 王明小朋友
-        p 男生
-        p 11岁
-        p 自闭症
-        p 家住重庆市渝北区 
+        h2= student.Student_name + '小朋友'
+        p= student.Gender + '生'
+        p= student.age + '岁'
+        p= '自闭症'
+        p= '家住' + student.Address_City + student.Address_District
       .buttons
         a(href="/student/timetable" class="btn-link")
           img(src="/images/timetablebutton.png" alt="Timetable button")

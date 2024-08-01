@@ -17,6 +17,11 @@ html(lang="en")
         div
           input(type="password" id="password" name="password" placeholder="请输入密码" required)
         div
+          label(for="user_type") 选择用户类型:
+          select(id="user_type" name="user_type" required)
+            option(value="student") 学生
+            option(value="teacher") 老师
+        div
           button(type="submit") 注册
         div
           a(href="/login") 已有账户？登录
