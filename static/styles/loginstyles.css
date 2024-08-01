@@ -43,7 +43,7 @@ body {
 
 .login-box .top-image {
   position: absolute;
-  top: 18%; /* 使图片底边与登录框顶部对齐，根据需要调整 */
+  top: 19%; /* 使图片底边与登录框顶部对齐，根据需要调整 */
   left: 50%;
   transform: translateX(-50%); /* 居中图片 */
   width: 200px; /* 图片宽度与登录框宽度一致 */
@@ -78,17 +78,27 @@ body {
   z-index: 0;
 }
 
-button {
-  background-color: #FAFFAF; /* 设置按钮背景颜色 */
-  color: #456D00; /* 设置按钮字体颜色 */
-  font-family: 'SimSun', Arial, sans-serif; /* 设置按钮字体 */
+/* 通用样式 */
+.button, .link-button {
+  display: inline-block;
+  background-color: #FAFFAF;
+  color: #456D00;
+  font-family: 'SimSun', Arial, sans-serif;
   border: none;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 20px; /* 设置按钮两边半圆形 */
+  padding: 10px 40px;
+  border-radius: 20px;
+  text-align: center;
   cursor: pointer;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 5px; /* 添加 margin 以增加按钮之间的距离 */
 }
 
-button:hover {
-  background-color: #e5e8a6; /* 添加悬停效果 */
+.button:hover, .link-button:hover {
+  background-color: #e5e8a6;
+}
+
+.button:focus, .link-button:focus {
+  outline: 2px solid #456D00;
+  outline-offset: 2px;
 }

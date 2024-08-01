@@ -7,9 +7,9 @@ body {
     height: 100vh;
     position: relative;
     font-family: 'SimSun', Arial, sans-serif;
-  }
-  
-  .teacher-background {
+}
+
+.teacher-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -18,31 +18,31 @@ body {
     background: url('/images/teacherpage.jpg') no-repeat center center fixed;
     background-size: cover;
     z-index: -1;
-  }
-  
-  .container {
+}
+
+.container {
     text-align: center;
     padding: 20px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.3);
     max-width: 800px;
     width: 100%;
-  }
-  
-  h1 {
+}
+
+h1 {
     font-size: 36px;
     margin-bottom: 20px;
-  }
-  
-  form {
+}
+
+form {
     margin-bottom: 20px;
-  }
-  
-  form div {
+}
+
+form div {
     margin-bottom: 15px;
-  }
-  
-  input {
+}
+
+input {
     width: calc(100% - 22px);
     padding: 10px;
     border-radius: 20px;
@@ -50,14 +50,26 @@ body {
     background-color: #FAFFAF;
     font-family: 'SimSun', Arial, sans-serif;
     color: #456D00;
-  }
-  
-  button {
+}
+
+button {
     padding: 10px 20px;
     border-radius: 20px;
     background-color: #CDDE84;
     border: none;
     color: #456D00;
     cursor: pointer;
-  }
+}
+
+.back-button {
+    position: absolute;
+    top: 20px; /* 调整为合适的距离 */
+    left: 20px; /* 调整为合适的距离 */
+    z-index: 10; /* 确保在其他内容之上 */
+}
+
+.back-button img {
+    width: 100px; /* 返回按钮的宽度 */
+    height: auto;
+}
   
