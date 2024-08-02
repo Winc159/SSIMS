@@ -21,16 +21,61 @@ body {
   }
 
   .container {
-      text-align: center;
-      padding: 20px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
-    }
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+    max-width: 1200px; /* 限制容器最大宽度 */
+    width: 90%; /* 宽度为视口宽度的 90% */
+  }
 
-    h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
-    }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr); /* 一列为日期，一列为时间 */
+    gap: 1px;
+    border: 1px solid #ddd;
+}
+
+.calendar-header {
+    display: contents;
+    font-weight: bold;
+    background-color: #f4f4f4;
+}
+
+.calendar-body {
+    display: contents;
+}
+
+.calendar-date {
+    background-color: #e0f7fa;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.calendar-cell {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    min-height: 100px; /* 设置最小高度以容纳课程信息 */
+}
+
+.calendar-event {
+    border: 1px solid #ddd;
+    background-color: #e8f5e9;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.calendar-event p {
+    margin: 0;
+}
+
+  h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #333; /* 设置标题颜色 */
+  }
     
     table {
       width: 100%;
@@ -39,14 +84,23 @@ body {
     
     table th, table td {
       border: 1px solid #ddd;
-      padding: 8px;
+      padding: 12px; /* 增加内边距以改善可读性 */
       text-align: center;
     }
     
     table th {
       background-color: #f4f4f4;
+      font-weight: bold; /* 使表头文字加粗 */
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f9f9f9; /* 设置隔行背景色 */
     }
     
+    table tr:hover {
+      background-color: #e0e0e0; /* 设置鼠标悬停时的背景色 */
+    }
+
     .back-button {
       position: absolute;
       top: 20px; /* 调整为合适的距离 */

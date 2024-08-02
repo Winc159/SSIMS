@@ -1,6 +1,7 @@
 // Import express.js
 const express = require('express');
 const { login, register, calculateAge } = require('./models/user'); 
+const { getDay, getTime } = require('./models/timetable'); // 引用辅助函数
 const app = express();  // 只声明一次 app 实例
 // Get the functions in the db.js file to use
 const db = require('./services/db');
@@ -22,8 +23,9 @@ app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
-  }));
+    store: new session.MemoryStore(), // 存储会话数据的方式
+    cookie: { secure: false } // 允许在非 HTTPS 环境下使用
+}));
 
 // 使用 body-parser 解析请求体
 app.use(express.json());
@@ -120,9 +122,57 @@ app.get("/student/info", function(req, res) {
     res.render("studentpage/info");
 });
 
-// 创建一个 /student/timetable 路由来渲染课程表页面
-app.get("/student/timetable", function(req, res) {
-    res.render("studentpage/timetable");
+app.get('/student/timetable', async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const studentId = req.session.studentId;
+
+        if (!userId || !studentId) {
+            return res.redirect('/login');
+        }
+
+        // 查询课程安排和教师信息
+        const [rows] = await db.query(
+            'SELECT ' +
+            '  c.course_name, ' +
+            '  s.class_time AS class_time, ' +
+            '  s.class_room AS classroom, ' +
+            '  t.teacher_name ' +
+            'FROM class_schedules s ' +
+            'JOIN course c ON s.course_id = c.course_id ' +
+            'JOIN schedule_teachers st ON s.schedule_id = st.schedule_id ' +
+            'JOIN teacher t ON st.teacher_id = t.teacher_id ' +
+            'JOIN schedule_students ss ON s.schedule_id = ss.schedule_id ' +
+            'WHERE ss.student_id = ? ' +
+            'ORDER BY s.class_time',
+            [studentId]
+        );
+
+        // 确保 `rows` 是一个数组
+        const courseRows = Array.isArray(rows) ? rows : [rows];
+
+        console.log('Course rows:', courseRows); // 输出查询结果
+
+        // 格式化课程信息
+        const courses = courseRows.map(row => {
+            const classTime = new Date(row.class_time);
+            return {
+                date: getDay(classTime),
+                time: getTime(classTime),
+                course_name: row.course_name,
+                classroom: row.classroom,
+                teacher_name: row.teacher_name
+            };
+        });
+
+        console.log('Courses:', courses); // 输出课程信息
+
+        // 渲染页面并传递课程信息
+        res.render('studentpage/timetable', { courses });
+    } catch (err) {
+        console.error('Error fetching course info:', err);
+        res.status(500).send('服务器内部错误');
+    }
 });
 
 // 创建一个 /student/report 路由来渲染报告评估页面
