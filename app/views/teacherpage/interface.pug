@@ -12,12 +12,10 @@ html(lang="en")
       a(href="/teacher/info" class="avatar-link")
         img(src="/images/teacheravatar.jpg" alt="Teacher Avatar")
       .info
-        h2 陈晨老师
-        p 男
-        p 27岁
-        p 擅长体育课
-        p 爱心康复机构
-        p 123-123-123 
+        h2= teacher.Teacher_name + '老师'
+        p= teacher.Gender
+        p= teacher.age + '岁'
+        p= teacher.Institution_name
       .buttons
         a(href="/teacher/timetable" class="btn-link")
           img(src="/images/timetablebutton.png" alt="Timetable button")

@@ -185,9 +185,37 @@ app.get("/student/support", function(req, res) {
     res.render("studentpage/support");
 });
 
-// 创建一个 /teacherinterface 路由来渲染登录页面
-app.get("/teacher/interface", function(req, res) {
-    res.render("teacherpage/interface");
+// 老师界面路由
+app.get('/teacher/interface', async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        const teacherId = req.session.teacherId;
+  
+        if (!userId || !teacherId) {
+            return res.redirect('/login');
+        }
+  
+        // 查询老师信息
+        const [teacherRows] = await db.query('SELECT * FROM teacher WHERE teacher_id = ?', [teacherId]);
+        console.log('Student rows:', teacherRows); // 打印查询结果
+
+        // 如果没有找到老师数据
+        if (teacherRows.length === 0) {
+            return res.status(404).send('老师信息未找到');
+        }
+
+        const teacherInfo = teacherRows;
+
+        // 计算年龄
+        const dob = new Date(teacherInfo.DOB); // 将DOB字段转为Date对象
+        teacherInfo.age = calculateAge(dob); // 添加计算出的年龄
+
+        // 渲染页面并传递老师信息
+        res.render('teacherpage/interface', { teacher: teacherInfo });
+    } catch (err) {
+        console.error('Error fetching teacher info:', err);
+        res.status(500).send('服务器内部错误');
+    }
 });
 
 // 创建一个 /teacher/info 路由来渲染个人信息修改页面
