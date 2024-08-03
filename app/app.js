@@ -117,11 +117,59 @@ app.get('/student/interface', async (req, res) => {
     }
 });
 
-// 创建一个 /student/personal-info 路由来渲染个人信息修改页面
-app.get("/student/info", function(req, res) {
-    res.render("studentpage/info");
-});
+// 学生信息编辑界面路由
+app.get('/student/info', async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      const studentId = req.session.studentId;
+  
+      if (!userId || !studentId) {
+        return res.redirect('/login');
+      }
+  
+      // 查询学生信息
+      const [studentRows] = await db.query('SELECT * FROM student WHERE student_id = ?', [studentId]);
+  
+      if (studentRows.length === 0) {
+        return res.status(404).send('学生信息未找到');
+      }
+  
+      const studentInfo = studentRows;
+  
+      // 渲染学生信息编辑页面，并传递学生信息
+      res.render('studentpage/info', { student: studentInfo });
+    } catch (err) {
+      console.error('Error fetching student info:', err);
+      res.status(500).send('服务器内部错误');
+    }
+  });
 
+  // 更新学生信息的路由
+app.post('/student/update-info', async (req, res) => {
+    try {
+      const studentId = req.session.studentId;
+  
+      if (!studentId) {
+        return res.redirect('/login');
+      }
+  
+      const { student_name, gender, DOB, symptoms, Address_City, Address_District, Address_detail } = req.body;
+  
+      // 更新学生信息
+      await db.query(
+        'UPDATE student SET Student_name = ?, gender = ?, DOB = ?, symptoms = ?, Address_City = ?, Address_District, Address_detail WHERE student_id = ?',
+        [student_name, gender, DOB, symptoms, Address_City, Address_District, Address_detail, studentId]
+      );
+  
+      res.redirect('/student/interface');
+    } catch (err) {
+      console.error('Error updating student info:', err);
+      res.status(500).send('服务器内部错误');
+    }
+});
+  
+
+// 创建一个学生课表的页面
 app.get('/student/timetable', async (req, res) => {
     try {
         const userId = req.session.userId;

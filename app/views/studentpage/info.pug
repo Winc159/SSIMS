@@ -3,30 +3,36 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title 个人信息修改
+    title 学生信息修改
     link(rel="stylesheet" href="/styles/studentstyles/info.css")
   body.student-background
     a(href="/student/interface" class="back-button")
       img(src="/images/backbutton.png" alt="Back Button")
     .container
-      h1 个人信息修改
+      h1 学生信息修改
       form(action="/student/update-info" method="post")
         div
-          label(for="name") 姓名
-          input(type="text" id="name" name="name" value="王明" required)
+          label(for="Student_name") 姓名
+          input(type="text" id="Student_name" name="Student_name" value=student.Student_name required)
         div
           label(for="gender") 性别
           select(id="gender" name="gender")
-            option(value="男" selected) 男
-            option(value="女") 女
+            option(value="男" selected=(student.gender === '男')) 男
+            option(value="女" selected=(student.gender === '女')) 女
         div
-          label(for="birthdate") 出生日期
-          input(type="date" id="birthdate" name="birthdate" required)
+          label(for="DOB") 出生日期（年-月-日）
+          input(type="date" id="DOB" name="DOB" value=student.birthdate required)
         div
           label(for="symptoms") 症状
-          input(type="text" id="symptoms" name="symptoms" value="自闭症" required)
+          input(type="text" id="symptoms" name="symptoms" value=student.symptoms required)
         div
-          label(for="location") 辅导机构
-          input(type="text" id="location" name="location" value="家住重庆市渝北区" required)
+          label(for="Address_City") 城市
+          input(type="text" id="Address_City" name="Address_City" value=student.Address_City required)
+        div
+          label(for="Address_District") 区县
+          input(type="text" id="Address_District" name="Address_District" value=student.Address_District required)
+        div
+          label(for="Address_detail") 详细地址
+          input(type="text" id="Address_detail" name="Address_detail" value=student.Address_detail required)
         div
           button(type="submit") 保存
