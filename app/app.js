@@ -136,6 +136,10 @@ app.get('/student/info', async (req, res) => {
   
       const studentInfo = studentRows;
   
+      // 格式化DOB为"yyyy-MM-dd"
+      const dob = new Date(studentInfo.DOB);
+      studentInfo.formattedDOB = dob.toISOString().split('T')[0]; // 提取并格式化日期部分
+
       // 渲染学生信息编辑页面，并传递学生信息
       res.render('studentpage/info', { student: studentInfo });
     } catch (err) {
@@ -157,7 +161,7 @@ app.post('/student/update-info', async (req, res) => {
   
       // 更新学生信息
       await db.query(
-        'UPDATE student SET Student_name = ?, gender = ?, DOB = ?, symptoms = ?, Address_City = ?, Address_District, Address_detail WHERE student_id = ?',
+        'UPDATE student SET Student_name = ?, gender = ?, DOB = ?, symptoms = ?, Address_City = ?, Address_District = ?, Address_detail = ? WHERE student_id = ?',
         [student_name, gender, DOB, symptoms, Address_City, Address_District, Address_detail, studentId]
       );
   
@@ -223,9 +227,28 @@ app.get('/student/timetable', async (req, res) => {
     }
 });
 
-// 创建一个 /student/report 路由来渲染报告评估页面
-app.get("/student/report", function(req, res) {
-    res.render("studentpage/report");
+app.get('/student/report', async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const studentId = req.session.studentId;
+
+    if (!userId || !studentId) {
+      return res.redirect('/login');
+    }
+
+    // 查询学生报告信息
+    const [reportRows] = await db.query('SELECT * FROM student_report WHERE student_id = ?', [studentId]);
+    console.log('Report rows:', reportRows); // 打印查询结果
+
+    // 将数据包装在数组中
+    const reports = Array.isArray(reportRows) ? reportRows : [reportRows];
+
+    // 渲染页面并传递报告信息
+    res.render('studentpage/report', { reports });
+  } catch (err) {
+    console.error('Error fetching report info:', err);
+    res.status(500).send('服务器内部错误');
+  }
 });
 
 // 创建一个 /student/support 路由来渲染支持页面
@@ -266,9 +289,59 @@ app.get('/teacher/interface', async (req, res) => {
     }
 });
 
-// 创建一个 /teacher/info 路由来渲染个人信息修改页面
-app.get("/teacher/info", function(req, res) {
-    res.render("teacherpage/info");
+// 教师信息编辑界面路由
+app.get('/teacher/info', async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const teacherId = req.session.teacherId;
+
+    if (!userId || !teacherId) {
+      return res.redirect('/login');
+    }
+
+    // 查询教师信息
+    const [teacherRows] = await db.query('SELECT * FROM teacher WHERE teacher_id = ?', [teacherId]);
+
+    if (teacherRows.length === 0) {
+      return res.status(404).send('教师信息未找到');
+    }
+
+    const teacherInfo = teacherRows;
+
+    // 格式化DOB为"yyyy-MM-dd"
+    const dob = new Date(teacherInfo.DOB);
+    teacherInfo.formattedDOB = dob.toISOString().split('T')[0]; // 提取并格式化日期部分
+
+    // 渲染教师信息编辑页面，并传递教师信息
+    res.render('teacherpage/info', { teacher: teacherInfo });
+  } catch (err) {
+    console.error('Error fetching student info:', err);
+    res.status(500).send('服务器内部错误');
+  }
+});
+
+// 更新教师信息的路由
+app.post('/teacher/update-info', async (req, res) => {
+  try {
+    const teacherId = req.session.teacherId;
+
+    if (!teacherId) {
+      return res.redirect('/login');
+    }
+
+    const { teacher_name, gender, DOB, Address, Phone_number, Institution_name } = req.body;
+
+    // 更新教师信息
+    await db.query(
+      'UPDATE teacher SET teacher_name = ?, gender = ?, DOB = ?, Address = ?, Phone_number = ?, Institution_name = ? WHERE teacher_id = ?',
+      [teacher_name, gender, DOB, Address, Phone_number, Institution_name, teacherId]
+    );
+
+    res.redirect('/teacher/interface');
+  } catch (err) {
+    console.error('Error updating teacher info:', err);
+    res.status(500).send('服务器内部错误');
+  }
 });
 
 // 创建一个 /teacher/folder 路由来渲染个人信息修改页面

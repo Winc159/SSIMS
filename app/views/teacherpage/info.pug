@@ -9,24 +9,27 @@ html(lang="en")
     a(href="/teacher/interface" class="back-button")
       img(src="/images/backbutton.png" alt="Back Button")
     .container
-      h1 个人信息修改
+      h1 老师信息修改
       form(action="/teacher/update-info" method="post")
         div
-          label(for="name") 姓名
-          input(type="text" id="name" name="name" value="王明" required)
+          label(for="Teacher_name") 姓名
+          input(type="text" id="teacher_name" name="teacher_name" value=teacher.Teacher_name required)
         div
           label(for="gender") 性别
           select(id="gender" name="gender")
-            option(value="男" selected) 男
-            option(value="女") 女
+            option(value="男" selected=(teacher.gender === '男')) 男
+            option(value="女" selected=(teacher.gender === '女')) 女
         div
-          label(for="birthdate") 出生日期
-          input(type="date" id="birthdate" name="birthdate" required)
+          label(for="DOB") 出生日期（年-月-日）
+          input(type="date" id="DOB" name="DOB" value=teacher.formattedDOB required)
         div
-          label(for="symptoms") 课程
-          input(type="text" id="symptoms" name="symptoms" value="自闭症" required)
+          label(for="Address") 地址
+          input(type="text" id="Address" name="Address" value=teacher.Address required)
         div
-          label(for="location") 机构
-          input(type="text" id="location" name="location" value="家住重庆市渝北区" required)
+          label(for="Phone_number") 电话
+          input(type="text" id="Phone_number" name="Phone_number" value=teacher.Phone_number required)
+        div
+          label(for="Institution_name") 机构
+          input(type="text" id="Institution_name" name="Institution_name" value=teacher.Institution_name required)
         div
           button(type="submit") 保存

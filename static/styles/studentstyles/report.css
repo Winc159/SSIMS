@@ -31,3 +31,22 @@ body {
     width: 100px; /* 返回按钮的宽度 */
     height: auto;
   }
+
+  /* 确保没有隐藏表格或行的 CSS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}

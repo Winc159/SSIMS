@@ -21,7 +21,7 @@ html(lang="en")
             option(value="女" selected=(student.gender === '女')) 女
         div
           label(for="DOB") 出生日期（年-月-日）
-          input(type="date" id="DOB" name="DOB" value=student.birthdate required)
+          input(type="date" id="DOB" name="DOB" value=student.formattedDOB required)
         div
           label(for="symptoms") 症状
           input(type="text" id="symptoms" name="symptoms" value=student.symptoms required)

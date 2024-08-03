@@ -10,4 +10,17 @@ html(lang="en")
       img(src="/images/backbutton.png" alt="Back Button")
     .container
       h1 评估报告
-      p 评估内容和反馈
+      table
+        thead
+          tr
+            th 报告名称
+            th 日期
+        tbody
+          if reports && reports.length > 0
+            each report in reports
+              tr
+                td= report.Report_name
+                td= new Date(report.Report_time).toLocaleDateString()
+          else
+            tr
+              td(colspan="2") 没有报告数据
