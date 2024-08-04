@@ -11,8 +11,9 @@ async function login(username, password) {
       throw new Error('用户名或密码不正确');
     }
 
-    const user = rows[0];
-
+    // 转换数据为对象（如果需要）
+    const user = Array.isArray(rows) ? rows[0] : rows;
+    
     // 直接比较明文密码
     if (password !== user.password) {
         throw new Error('用户名或密码不正确');

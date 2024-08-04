@@ -18,7 +18,8 @@ html(lang="en")
             th 课程名称
             th 教室
             th 教师
-            th 学生链接
+            th 学生
+            th 编辑 删除
         tbody
           if courses && courses.length > 0
             each course in courses
@@ -28,10 +29,19 @@ html(lang="en")
                 td= course.course_name
                 td= course.classroom
                 td= course.teacher_name
+                td
+                  if course.students && course.students.length > 0
+                    each student, index in course.students
+                      span #{student.student_name}
+                      if index < course.students.length - 1
+                        | ,
+                  else
+                    span 没有学生
                 td 
-                  a(href=`/teacher/course/${course.schedule_id}/students`) 查看学生
+                  button(type='editbutton', onclick=`window.location.href='/teacher/course/${course.schedule_id}/edit'`, class='edit-button')
+                    img(src='/images/editbutton.png', alt='编辑')
+                  button(type='deletebutton', onclick=`if(confirm("确定要删除这个课程安排吗？")) { window.location.href='/teacher/course/${course.schedule_id}/delete'; }`, class='delete-button')
+                    img(src='/images/deletebutton.png', alt='删除')
           else
             tr
-              td(colspan="6") 没有课程安排
-    a(href="/teacher/edittimetable" class="edit-button")
-      img(src="/images/editbutton.png" alt="Edit Timetable")
+              td(colspan="7") 没有课程安排

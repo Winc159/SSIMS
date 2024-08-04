@@ -47,6 +47,15 @@ table th {
   background-color: #f4f4f4;
 }
 
+button {
+  background: none; /* 去掉默认背景 */
+  border: none; /* 去掉默认边框 */
+  padding: 0; /* 去掉默认内边距 */
+  cursor: pointer; /* 鼠标悬停时显示手形光标 */
+  display: inline-flex; /* 使用内联弹性布局 */
+  align-items: center; /* 垂直居中对齐图片 */
+}
+
 .back-button {
   position: absolute;
   top: 20px; /* 调整为合适的距离 */
@@ -59,14 +68,32 @@ table th {
   height: auto;
 }
 
+
 .edit-button {
-  position: absolute;
-  bottom: 20px; /* 调整为合适的距离 */
-  right: 20px; /* 调整为合适的距离 */
-  z-index: 10; /* 确保在其他内容之上 */
+  /* 去掉绝对定位 */
+  margin-right: 5px; /* 调整按钮之间的间距 */
 }
 
 .edit-button img {
-  width: 100px; /* 编辑按钮的宽度，根据需要调整 */
-  height: auto;
+  width: 24px; /* 调整为合适的宽度 */
+  height: 24px; /* 调整为合适的高度 */
+}
+
+.delete-button {
+  /* 去掉绝对定位 */
+  margin-left: 5px; /* 调整按钮之间的间距 */
+}
+
+.delete-button img {
+  width: 24px; /* 调整为合适的宽度 */
+  height: 24px; /* 调整为合适的高度 */
+}
+
+table {
+  width: 100%; /* 确保表格占满整个容器 */
+}
+
+td {
+  padding: 8px; /* 设置单元格内边距 */
+  vertical-align: middle; /* 垂直居中内容 */
 }

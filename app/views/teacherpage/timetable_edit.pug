@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 课程信息修改
+    link(rel="stylesheet" href="/styles/teacherstyles/timetable.css")
+  body.teacher-background
+    a(href="/teacher/timetable" class="back-button")
+      img(src="/images/backbutton.png" alt="Back Button")
+    .container
+      h1 课程信息修改
+      form(action="/teacher/update-timetable" method="post")
+        div
+          label(for="Teacher_name") 课程名称
+          input(type="text" id="teacher_name" name="teacher_name" value=teacher.Teacher_name required)
+        div
+          label(for="gender") 教师
+          input(type="text" id="teacher_name" name="teacher_name" value=teacher.Teacher_name required)
+        div
+          label(for="DOB") 上课时间 xxxx-xx-xx xx:xx
+          input(type="date" id="DOB" name="DOB" value=teacher.formattedDOB required)
+        div
+          label(for="Address") 教室
+          input(type="text" id="Address" name="Address" value=teacher.Address required)
+        div
+          label(for="Phone_number") 学生
+          input(type="text" id="Phone_number" name="Phone_number" value=teacher.Phone_number required)
+        div
+          button(type="submit") 保存

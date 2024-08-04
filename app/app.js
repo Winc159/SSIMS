@@ -111,8 +111,7 @@ app.get('/student/interface', async (req, res) => {
         }
   
         // 查询学生信息
-        const [studentRows] = await db.query('SELECT * FROM student WHERE student_id = ?', [studentId]);
-        console.log('Student rows:', studentRows); // 打印查询结果
+        const studentRows = await db.query('SELECT * FROM student WHERE student_id = ?', [studentId]);
 
         // 如果没有找到学生数据
         if (studentRows.length === 0) {
@@ -144,7 +143,7 @@ app.get('/student/info', async (req, res) => {
       }
   
       // 查询学生信息
-      const [studentRows] = await db.query('SELECT * FROM student WHERE student_id = ?', [studentId]);
+      const studentRows = await db.query('SELECT * FROM student WHERE student_id = ?', [studentId]);
   
       if (studentRows.length === 0) {
         return res.status(404).send('学生信息未找到');
@@ -200,7 +199,7 @@ app.get('/student/timetable', async (req, res) => {
         }
 
         // 查询课程安排和教师信息
-        const [rows] = await db.query(
+        const courseRows = await db.query(
             'SELECT ' +
             '  c.course_name, ' +
             '  s.class_time AS class_time, ' +
@@ -216,9 +215,6 @@ app.get('/student/timetable', async (req, res) => {
             [studentId]
         );
 
-        // 确保 `rows` 是一个数组
-        const courseRows = Array.isArray(rows) ? rows : [rows];
-
         console.log('Course rows:', courseRows); // 输出查询结果
 
         // 格式化课程信息
@@ -232,8 +228,6 @@ app.get('/student/timetable', async (req, res) => {
                 teacher_name: row.teacher_name
             };
         });
-
-        console.log('Courses:', courses); // 输出课程信息
 
         // 渲染页面并传递课程信息
         res.render('studentpage/timetable', { courses });
@@ -253,7 +247,7 @@ app.get('/student/report', async (req, res) => {
     }
 
     // 查询学生报告信息
-    const [reportRows] = await db.query('SELECT * FROM student_report WHERE student_id = ?', [studentId]);
+    const reportRows = await db.query('SELECT * FROM student_report WHERE student_id = ?', [studentId]);
     console.log('Report rows:', reportRows); // 打印查询结果
 
     // 将数据包装在数组中
@@ -284,9 +278,8 @@ app.get('/teacher/interface', async (req, res) => {
   
         // 查询老师信息
         const [teacherRows] = await db.query('SELECT * FROM teacher WHERE teacher_id = ?', [teacherId]);
-        console.log('Student rows:', teacherRows); // 打印查询结果
 
-        // 如果没有找到老师数据
+        // 如果没有找到老师数
         if (teacherRows.length === 0) {
             return res.status(404).send('老师信息未找到');
         }
@@ -316,7 +309,7 @@ app.get('/teacher/info', async (req, res) => {
     }
 
     // 查询教师信息
-    const [teacherRows] = await db.query('SELECT * FROM teacher WHERE teacher_id = ?', [teacherId]);
+    const teacherRows = await db.query('SELECT * FROM teacher WHERE teacher_id = ?', [teacherId]);
 
     if (teacherRows.length === 0) {
       return res.status(404).send('教师信息未找到');
@@ -403,14 +396,8 @@ app.get('/teacher/search', async (req, res) => {
         `%${query}%`, // Institution_name LIKE
       ];
 
-      console.log('SQL Query:', sqlQuery);
-      console.log('Query Parameters:', queryParams);
-
       // 执行查询
       const rows = await db.query(sqlQuery, queryParams);
-
-      console.log('Number of rows:', Array.isArray(rows) ? rows.length : 0);
-      console.log('Database rows:', rows);
 
       // 确保 `rows` 是一个数组
       students = Array.isArray(rows) ? rows : [rows];
@@ -445,10 +432,10 @@ app.get('/teacher/timetable', async (req, res) => {
           return res.redirect('/login');
       }
 
-      // 查询课程安排和学生信息
-      const [rows] = await db.query(
+      // 查询课程安排
+      const courseRows = await db.query(
           'SELECT ' +
-          '  st.schedule_id, ' +
+          '  s.schedule_id, ' +
           '  c.course_name, ' +
           '  s.class_time AS class_time, ' +
           '  s.class_room AS classroom, ' +
@@ -462,31 +449,84 @@ app.get('/teacher/timetable', async (req, res) => {
           [teacherId]
       );
 
-      // 确保 `rows` 是一个数组
-      const courseRows = Array.isArray(rows) ? rows : [rows];
+      // 查询学生信息
+      const studentRows = await db.query(
+          'SELECT ' +
+          '  ss.schedule_id, ' +
+          '  st.student_id, ' +
+          '  st.student_name ' +
+          'FROM schedule_students ss ' +
+          'JOIN student st ON ss.student_id = st.student_id'
+      );
 
-      console.log('Course rows:', courseRows); // 输出查询结果
+      // 打印查询结果
+      console.log('Course rows:', courseRows);
+      console.log('Student rows:', studentRows);
+
+      // 初始化学生映射
+      const studentMap = {};
+      for (const student of studentRows) {
+          console.log('Student:', student);
+          const scheduleId = student.schedule_id.toString(); // 确保为字符串
+
+          // 如果 studentMap[scheduleId] 未定义，则初始化为一个空数组
+          if (!studentMap[scheduleId]) {
+              studentMap[scheduleId] = [];
+          }
+
+          // 将学生信息添加到对应的 schedule_id 数组中
+          studentMap[scheduleId].push(student);
+      }
+
+      // 打印最终的 studentMap
+      console.log('Student map:', studentMap);
 
       // 格式化课程信息
       const courses = courseRows.map(row => {
           const classTime = new Date(row.class_time);
+          const scheduleId = row.schedule_id.toString(); // 确保为字符串
           return {
-              schedule_id: row.schedule_id,
+              schedule_id: scheduleId,
               date: getDay(classTime),
               time: getTime(classTime),
               course_name: row.course_name,
               classroom: row.classroom,
-              teacher_name: row.teacher_name
+              teacher_name: row.teacher_name,
+              students: studentMap[scheduleId] || [] // 如果没有匹配的学生，返回空数组
           };
       });
 
-      console.log('Courses:', courses); // 输出课程信息
+      // 打印数据
+      console.log('Student map:', studentMap);
+      console.log('Courses with students:', courses);
 
       // 渲染页面并传递课程信息
       res.render('teacherpage/timetable', { courses });
   } catch (err) {
       console.error('Error fetching course info:', err);
       res.status(500).send('服务器内部错误');
+  }
+});
+
+// 删除课程安排的路由
+app.get('/teacher/course/:schedule_id/delete', async (req, res) => {
+  const scheduleId = req.params.schedule_id;
+
+  try {
+    // 删除课程安排记录
+    await db.query('DELETE FROM class_schedules WHERE schedule_id = ?', [scheduleId]);
+
+    // 删除课程与学生的关联
+    await db.query('DELETE FROM schedule_students WHERE schedule_id = ?', [scheduleId]);
+
+    // 删除课程与教师的关联（如果需要）
+    await db.query('DELETE FROM schedule_teachers WHERE schedule_id = ?', [scheduleId]);
+
+    // 重定向到课程列表页
+    res.redirect('/teacher/courses');
+  } catch (error) {
+    console.error('删除课程安排时发生错误:', error);
+    res.status(500).send('删除课程安排时发生错误');
   }
 });
 
@@ -501,7 +541,7 @@ app.get('/teacher/course/:scheduleId/students', async (req, res) => {
       }
 
       // 查询该课程的学生信息
-      const [rows] = await db.query(
+      const students = await db.query(
         'SELECT st.student_id, st.student_name ' +
         'FROM student st ' +
         'JOIN schedule_students ss ON ss.student_id = st.student_id ' +
@@ -509,9 +549,6 @@ app.get('/teacher/course/:scheduleId/students', async (req, res) => {
         'WHERE cs.schedule_id = ?',
         [scheduleId]
       );
-      console.log('Students:', rows); // 打印查询结果
-      const students = Array.isArray(rows) ? rows : [rows];
-      console.log('Students:', students);
 
       res.render('teacherpage/timetable_student', { students });
   } catch (err) {
