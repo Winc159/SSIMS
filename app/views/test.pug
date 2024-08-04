@@ -1,0 +1,11 @@
+//- test.pug
+doctype html
+html
+  head
+    title Test Page
+  body
+    h1 Students List
+    ul
+      each student in students
+        li
+          | #{student.name} - #{student.Address_City} - #{student.symptoms}

@@ -6,7 +6,6 @@ const app = express();  // 只声明一次 app 实例
 // Get the functions in the db.js file to use
 const db = require('./services/db');
 var session = require("express-session")
-
 const path = require('path');
 
 // Global error handling middleware
@@ -39,6 +38,23 @@ app.set('views', path.join(__dirname, 'views'));
 // Create a route for root - /
 app.get("/", function(req, res) {
     res.send("Hello world!");
+});
+
+app.get('/test', async (req, res) => {
+  try {
+    const sqlQuery = 'SELECT * FROM student LIMIT 10';
+    const rows = await db.query(sqlQuery);
+
+    // 打印调试信息
+    console.log('Number of rows:', rows.length);
+    console.log('Database rows:', rows);
+
+    // 渲染测试页面
+    res.render('test', { students: rows });
+  } catch (err) {
+    console.error('Error fetching student info:', err);
+    res.status(500).send('服务器内部错误');
+  }
 });
 
 // 创建一个 /login 路由来渲染登录页面
@@ -344,17 +360,167 @@ app.post('/teacher/update-info', async (req, res) => {
   }
 });
 
-// 创建一个 /teacher/folder 路由来渲染个人信息修改页面
-app.get("/teacher/folder", function(req, res) {
-    res.render("teacherpage/folder");
+app.get('/teacher/search', async (req, res) => {
+  try {
+    const query = req.query.query;
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.redirect('/login');
+    }
+
+    let students = [];
+    let totalStudents = 0;
+
+    if (query) {
+      // 根据搜索条件构建 SQL 查询
+      const sqlQuery = `
+        SELECT s.Student_id,
+               s.Student_name AS name, 
+               s.DOB, 
+               s.Gender, 
+               s.symptoms, 
+               s.Address_City, 
+               s.Address_District, 
+               s.Address_detail, 
+               s.Parents_name,
+               s.Parents_Phonenumber, 
+               s.Institution_name 
+        FROM student s
+        WHERE s.Student_name LIKE ? 
+           OR s.symptoms LIKE ? 
+           OR s.Address_City LIKE ? 
+           OR s.Address_District LIKE ? 
+           OR s.Institution_name LIKE ?
+      `;
+      
+      // 构建查询参数
+      const queryParams = [
+        `%${query}%`, // Student_name LIKE
+        `%${query}%`, // symptoms LIKE
+        `%${query}%`, // Address_City LIKE
+        `%${query}%`, // Address_District LIKE
+        `%${query}%`, // Institution_name LIKE
+      ];
+
+      console.log('SQL Query:', sqlQuery);
+      console.log('Query Parameters:', queryParams);
+
+      // 执行查询
+      const rows = await db.query(sqlQuery, queryParams);
+
+      console.log('Number of rows:', Array.isArray(rows) ? rows.length : 0);
+      console.log('Database rows:', rows);
+
+      // 确保 `rows` 是一个数组
+      students = Array.isArray(rows) ? rows : [rows];
+      totalStudents = students.length;
+
+      // 格式化 DOB 为 yyyy-MM-dd
+      students = students.map(student => {
+        const dob = new Date(student.DOB);
+        return {
+          ...student,
+          DOB: dob.toISOString().split('T')[0] // 提取并格式化日期部分
+        };
+      });
+    }
+
+    // 渲染页面并传递搜索结果
+    res.render('teacherpage/search', { students, totalStudents });
+  } catch (err) {
+    console.error('Error fetching student info:', err);
+    res.status(500).send('服务器内部错误');
+  }
 });
 
-// 创建一个 /teacher/timetable 路由来渲染课程表页面
-app.get("/teacher/timetable", function(req, res) {
-    res.render("teacherpage/timetable");
+
+// 创建一个教师课表的页面
+app.get('/teacher/timetable', async (req, res) => {
+  try {
+      const userId = req.session.userId;
+      const teacherId = req.session.teacherId;
+
+      if (!userId || !teacherId) {
+          return res.redirect('/login');
+      }
+
+      // 查询课程安排和学生信息
+      const [rows] = await db.query(
+          'SELECT ' +
+          '  st.schedule_id, ' +
+          '  c.course_name, ' +
+          '  s.class_time AS class_time, ' +
+          '  s.class_room AS classroom, ' +
+          '  t.teacher_name ' +
+          'FROM class_schedules s ' +
+          'JOIN course c ON s.course_id = c.course_id ' +
+          'JOIN schedule_teachers st ON s.schedule_id = st.schedule_id ' +
+          'JOIN teacher t ON st.teacher_id = t.teacher_id ' +
+          'WHERE t.teacher_id = ? ' +
+          'ORDER BY s.class_time',
+          [teacherId]
+      );
+
+      // 确保 `rows` 是一个数组
+      const courseRows = Array.isArray(rows) ? rows : [rows];
+
+      console.log('Course rows:', courseRows); // 输出查询结果
+
+      // 格式化课程信息
+      const courses = courseRows.map(row => {
+          const classTime = new Date(row.class_time);
+          return {
+              schedule_id: row.schedule_id,
+              date: getDay(classTime),
+              time: getTime(classTime),
+              course_name: row.course_name,
+              classroom: row.classroom,
+              teacher_name: row.teacher_name
+          };
+      });
+
+      console.log('Courses:', courses); // 输出课程信息
+
+      // 渲染页面并传递课程信息
+      res.render('teacherpage/timetable', { courses });
+  } catch (err) {
+      console.error('Error fetching course info:', err);
+      res.status(500).send('服务器内部错误');
+  }
 });
 
-// 创建一个 /teacher/timetable 路由来渲染课程表页面
+// 处理显示特定课程的学生页面的路由
+app.get('/teacher/course/:scheduleId/students', async (req, res) => {
+  try {
+      const { scheduleId } = req.params;
+      const userId = req.session.userId;
+
+      if (!userId) {
+          return res.redirect('/login');
+      }
+
+      // 查询该课程的学生信息
+      const [rows] = await db.query(
+        'SELECT st.student_id, st.student_name ' +
+        'FROM student st ' +
+        'JOIN schedule_students ss ON ss.student_id = st.student_id ' +
+        'JOIN class_schedules cs ON ss.schedule_id = cs.schedule_id ' +
+        'WHERE cs.schedule_id = ?',
+        [scheduleId]
+      );
+      console.log('Students:', rows); // 打印查询结果
+      const students = Array.isArray(rows) ? rows : [rows];
+      console.log('Students:', students);
+
+      res.render('teacherpage/timetable_student', { students });
+  } catch (err) {
+      console.error('Error fetching student info:', err);
+      res.status(500).send('服务器内部错误');
+  }
+}); 
+
+// 创建一个 /teacher/edittimetable 路由来渲染课程表页面
 app.get("/teacher/edittimetable", function(req, res) {
     res.render("teacherpage/edit");
 });

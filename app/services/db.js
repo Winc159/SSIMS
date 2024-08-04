@@ -16,13 +16,13 @@ const config = {
 
 const pool = mysql.createPool(config.db);
 
-// Utility function to query the database
 async function query(sql, params) {
   try {
-    const [rows, fields] = await pool.execute(sql, params);
-    return rows;
+    const [rows] = await pool.execute(sql, params);
+    console.log('Query result:', rows); // 打印返回的结果
+    return rows; // 直接返回 rows，而不是 `[rows]`
   } catch (err) {
-    console.error('Database query error:', err);
+    console.error('Query error:', err.message);
     throw err;
   }
 }
