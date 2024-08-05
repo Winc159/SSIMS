@@ -530,32 +530,65 @@ app.get('/teacher/course/:schedule_id/delete', async (req, res) => {
   }
 });
 
-// 处理显示特定课程的学生页面的路由
-app.get('/teacher/course/:scheduleId/students', async (req, res) => {
+// 处理课程信息修改页面
+app.get('/teacher/timetable/:schedule_id/edit', async (req, res) => {
   try {
-      const { scheduleId } = req.params;
+      const { schedule_id } = req.params;
       const userId = req.session.userId;
 
       if (!userId) {
           return res.redirect('/login');
       }
 
-      // 查询该课程的学生信息
-      const students = await db.query(
-        'SELECT st.student_id, st.student_name ' +
-        'FROM student st ' +
-        'JOIN schedule_students ss ON ss.student_id = st.student_id ' +
-        'JOIN class_schedules cs ON ss.schedule_id = cs.schedule_id ' +
+      console.log(`Received request to edit timetable for ID: ${schedule_id}`);
+
+      // 查询课程信息
+      const courseResult = await db.query(
+        'SELECT cs.schedule_id, cs.class_time, cs.class_room, cs.course_id, c.course_name ' +
+        'FROM class_schedules cs ' +
+        'JOIN course c ON c.Course_id = cs.course_id ' +
         'WHERE cs.schedule_id = ?',
-        [scheduleId]
+        [schedule_id]
       );
 
-      res.render('teacherpage/timetable_student', { students });
+      if (!courseResult.length) {
+          return res.status(404).send('课程未找到');
+      }
+
+      const course = courseResult[0];
+      const formattedDOB = new Date(course.class_time).toISOString().slice(0, 16);
+
+      // 查询所有课程
+      const allCourses = await db.query(
+        'SELECT Course_id AS id, course_name FROM course'
+      );
+
+      res.render('teacherpage/timetable_edit', { course: { ...course, formattedDOB }, timetableId: schedule_id, courses: allCourses });
   } catch (err) {
-      console.error('Error fetching student info:', err);
+      console.error('Error fetching course info:', err);
       res.status(500).send('服务器内部错误');
   }
-}); 
+});
+
+// 处理课程信息修改提交
+app.post('/teacher/update-timetable/:schedule_id', async (req, res) => {
+  try {
+      const { course_id, class_time, class_room } = req.body;
+      const { schedule_id } = req.params;
+
+      await db.query(
+        'UPDATE class_schedules ' +
+        'SET course_id = ?, class_time = ?, class_room = ? ' +
+        'WHERE schedule_id = ?',
+        [course_id, class_time, class_room, schedule_id]
+      );
+
+      res.redirect('/teacher/timetable');
+  } catch (err) {
+      console.error('Error updating timetable:', err);
+      res.status(500).send('更新课程信息时出错');
+  }
+});
 
 // 创建一个 /teacher/edittimetable 路由来渲染课程表页面
 app.get("/teacher/edittimetable", function(req, res) {

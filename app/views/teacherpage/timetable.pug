@@ -38,7 +38,7 @@ html(lang="en")
                   else
                     span 没有学生
                 td 
-                  button(type='editbutton', onclick=`window.location.href='/teacher/course/${course.schedule_id}/edit'`, class='edit-button')
+                  button(type='editbutton', onclick=`window.location.href='/teacher/timetable/${course.schedule_id}/edit'`, class='edit-button')
                     img(src='/images/editbutton.png', alt='编辑')
                   button(type='deletebutton', onclick=`if(confirm("确定要删除这个课程安排吗？")) { window.location.href='/teacher/course/${course.schedule_id}/delete'; }`, class='delete-button')
                     img(src='/images/deletebutton.png', alt='删除')

@@ -3,28 +3,26 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    title 课程信息修改
-    link(rel="stylesheet" href="/styles/teacherstyles/timetable.css")
+  title Your Title
+    title 修改课程信息
+    link(rel="stylesheet" href="/styles/teacherstyles/timetable_edit.css")
   body.teacher-background
     a(href="/teacher/timetable" class="back-button")
       img(src="/images/backbutton.png" alt="Back Button")
     .container
-      h1 课程信息修改
-      form(action="/teacher/update-timetable" method="post")
+      h1 修改课程信息
+      form(action=`/teacher/update-timetable/${timetableId}` method="post")
         div
-          label(for="Teacher_name") 课程名称
-          input(type="text" id="teacher_name" name="teacher_name" value=teacher.Teacher_name required)
+          label(for="course_id") 课程
+          select(id="course_id" name="course_id"  required)
+            option(value="", disabled selected 选择课程)
+            each course in courses
+              option(value=course.id, selected=course.course_id == courseId) #{course.course_name}
         div
-          label(for="gender") 教师
-          input(type="text" id="teacher_name" name="teacher_name" value=teacher.Teacher_name required)
+          label(for="DOB") 上课时间 (yyyy-mm-dd HH:MM)
+          input(type="datetime-local" id="DOB" name="DOB" value=course.formattedDOB required)
         div
-          label(for="DOB") 上课时间 xxxx-xx-xx xx:xx
-          input(type="date" id="DOB" name="DOB" value=teacher.formattedDOB required)
-        div
-          label(for="Address") 教室
-          input(type="text" id="Address" name="Address" value=teacher.Address required)
-        div
-          label(for="Phone_number") 学生
-          input(type="text" id="Phone_number" name="Phone_number" value=teacher.Phone_number required)
+          label(for="class_room") 教室
+          input(type="text" id="class_room" name="class_room" value=course.class_room required)
         div
           button(type="submit") 保存
