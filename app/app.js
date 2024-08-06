@@ -1,6 +1,6 @@
 // Import express.js
 const express = require('express');
-const { login, register, calculateAge } = require('./models/user'); 
+const { login, calculateAge,  registerTeacher, registerStudent } = require('./models/user'); 
 const { getDay, getTime } = require('./models/timetable'); // 引用辅助函数
 const app = express();  // 只声明一次 app 实例
 // Get the functions in the db.js file to use
@@ -83,22 +83,39 @@ app.post('/login', async (req, res) => {
     }
   });
 
-// 创建一个 /register 路由来渲染注册页面
-app.get("/register", function(req, res) {
-    res.render("register");
+// 渲染学生注册页面
+app.get("/register/student", function(req, res) {
+  res.render("studentregister");
 });
 
-// 处理注册表单提交
-app.post('/register', async (req, res) => {
-    const { username, password, user_type } = req.body;
-  
-    try {
-      await register(username, password, user_type);
+// 处理学生注册表单提交
+app.post('/register/student', async (req, res) => {
+  const { username, password, Student_name, DOB, Gender, symptoms, Address_City, Address_District, Address_detail, Parents_name, Parents_Phonenumber, Institution_name } = req.body;
+
+  try {
+      await registerStudent(username, password, username, password, Student_name, DOB, Gender, symptoms, Address_City, Address_District, Address_detail, Parents_name, Parents_Phonenumber, Institution_name);
       res.redirect('/login');
-    } catch (err) {
-      res.status(500).send('注册失败：' + err.message);
-    }
-  });
+  } catch (err) {
+      res.status(500).send('学生注册失败：' + err.message);
+  }
+});
+
+// 渲染老师注册页面
+app.get("/register/teacher", function(req, res) {
+  res.render("teacherregister");
+});
+
+// 处理老师注册表单提交
+app.post('/register/teacher', async (req, res) => {
+  const { username, password, Teacher_name, Gender, DOB, Address, Phone_number, Institution_name } = req.body;
+
+  try {
+      await registerTeacher(username, password, Teacher_name, Gender, DOB, Address, Phone_number, Institution_name);
+      res.redirect('/login');
+  } catch (err) {
+      res.status(500).send('老师注册失败：' + err.message);
+  }
+});
   
 // 学生界面路由
 app.get('/student/interface', async (req, res) => {
@@ -118,7 +135,7 @@ app.get('/student/interface', async (req, res) => {
             return res.status(404).send('学生信息未找到');
         }
 
-        const studentInfo = studentRows;
+        const studentInfo = studentRows[0];
 
         // 计算年龄
         const dob = new Date(studentInfo.DOB); // 将DOB字段转为Date对象
@@ -590,9 +607,67 @@ app.post('/teacher/update-timetable/:schedule_id', async (req, res) => {
   }
 });
 
-// 创建一个 /teacher/edittimetable 路由来渲染课程表页面
-app.get("/teacher/edittimetable", function(req, res) {
-    res.render("teacherpage/edit");
+// 渲染添加课程页面
+app.get('/teacher/add_timetable', async (req, res) => {
+  try {
+    // 获取所有课程
+    const courses = await db.query('SELECT course_id AS id, course_name FROM course');
+
+    // 获取所有教师
+    const teachers = await db.query('SELECT teacher_id AS id, teacher_name AS name FROM teacher');
+
+    // 获取所有学生
+    const students = await db.query('SELECT student_id AS id, student_name AS name FROM student');
+
+    // 渲染页面并传递数据
+    res.render('teacherpage/timetable_addclass', { courses, teachers, students });
+  } catch (err) {
+    console.error('Error fetching data for add timetable page:', err);
+    res.status(500).send('服务器内部错误');
+  }
+});
+
+app.post('/teacher/add_timetable', async (req, res) => {
+  try {
+    const { course_id, class_time, class_room, teacher_id, student_ids } = req.body;
+
+    // 自动生成 schedule_id
+    const scheduleIdResult = await db.query('SELECT MAX(schedule_id) as max_id FROM class_schedules');
+    const schedule_id = (scheduleIdResult[0].max_id || 0) + 1;
+
+    // 插入 class_schedules 表
+    await db.query(
+      'INSERT INTO class_schedules (schedule_id, class_time, class_room, course_id) VALUES (?, ?, ?, ?)',
+      [schedule_id, class_time, class_room, course_id]
+    );
+
+    // 插入 schedule_teacher 表
+    await db.query(
+      'INSERT INTO schedule_teachers (schedule_id, teacher_id) VALUES (?, ?)',
+      [schedule_id, teacher_id]
+    );
+
+    // 插入 schedule_student 表
+    if (Array.isArray(student_ids)) {
+      for (const student_id of student_ids) {
+        await db.query(
+          'INSERT INTO schedule_students (schedule_id, student_id) VALUES (?, ?)',
+          [schedule_id, student_id]
+        );
+      }
+    } else {
+      // 处理单个学生ID的情况
+      await db.query(
+        'INSERT INTO schedule_students (schedule_id, student_id) VALUES (?, ?)',
+        [schedule_id, student_ids]
+      );
+    }
+
+    res.redirect('/teacher/timetable'); // 重定向到课程表页面
+  } catch (err) {
+    console.error('Error adding course:', err);
+    res.status(500).send('服务器内部错误');
+  }
 });
 
 // Start server on port 3000

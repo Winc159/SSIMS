@@ -1,0 +1,56 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 学生注册页面
+    link(rel="stylesheet" href="/styles/registerstyles.css")
+  body.login-background
+    .top-right-image
+      img(src="/images/cloud.png" alt="Top Right Image")
+    .login-box
+      h1 学生注册
+      form(action="/register/student" method="post")
+        div
+          label(for="username") 用户名
+          input(type="text" id="username" name="username" required)
+        div
+          label(for="password") 密码
+          input(type="password" id="password" name="password" required)
+        div
+          label(for="Student_name") 学生姓名
+          input(type="text" id="Student_name" name="Student_name" required)
+        div
+          label(for="DOB") 出生日期
+          input(type="date" id="DOB" name="DOB" required)
+        div
+          label(for="Gender") 性别
+          select(id="Gender" name="Gender" required)
+            option(value="" disabled selected) 选择性别
+            option(value="male") 男
+            option(value="female") 女
+        div
+          label(for="symptoms") 症状
+          input(id="symptoms" name="symptoms" rows="3")
+        div
+          label(for="Address_City") 城市
+          input(type="text" id="Address_City" name="Address_City" required)
+        div
+          label(for="Address_District") 区
+          input(type="text" id="Address_District" name="Address_District" required)
+        div
+          label(for="Address_detail") 详细地址
+          input(type="text")(id="Address_detail" name="Address_detail" rows="3")
+        div
+          label(for="Parents_name") 家长姓名
+          input(type="text" id="Parents_name" name="Parents_name" required)
+        div
+          label(for="Parents_Phonenumber") 家长联系电话
+          input(type="tel" id="Parents_Phonenumber" name="Parents_Phonenumber" required)
+        div
+          label(for="Institution_name") 辅导机构名称
+          input(type="text" id="Institution_name" name="Institution_name")
+        div
+          button(type="submit") 注册
+        div
+          a(href="/login") 已有账户？登录

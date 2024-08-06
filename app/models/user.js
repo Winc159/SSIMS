@@ -25,14 +25,32 @@ async function login(username, password) {
   }
 }
 
-async function register(username, password, user_type) {
-  try {
-    // 将用户信息插入数据库，直接存储明文密码
-    await query('INSERT INTO users (username, password, user_type) VALUES (?, ?, ?)', [username, password, user_type]);
-  } catch (err) {
-    throw new Error('注册失败：' + err.message);
-  }
+async function registerStudent(username, password, Student_name, DOB, Gender, symptoms, Address_City, Address_District, Address_detail, Parents_name, Parents_Phonenumber, Institution_name) {
+  // 创建用户，先不填充 student_id 或 teacher_id
+  const userResult = await query('INSERT INTO user (username, password, user_type) VALUES (?, ?, ?)', [username, password, 'student']);
+  const userId = userResult.insertId;
+
+  // 创建学生
+  const studentResult = await query('INSERT INTO student (Student_name, DOB, Gender, symptoms, Address_City, Address_District, Address_detail, Parents_name, Parents_Phonenumber, Institution_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [Student_name, DOB, Gender, symptoms, Address_City, Address_District, Address_detail, Parents_name, Parents_Phonenumber, Institution_name]);
+  const studentId = studentResult.insertId;
+
+  // 更新 user 表中的 student_id 列
+  await query('UPDATE user SET student_id = ? WHERE id = ?', [studentId, userId]);
 }
+
+async function registerTeacher(username, password, Teacher_name, Gender, DOB, Address, Phone_number, Institution_name) {
+  // 创建用户，先不填充 student_id 或 teacher_id
+  const userResult = await query('INSERT INTO user (username, password, user_type) VALUES (?, ?, ?)', [username, password, 'teacher']);
+  const userId = userResult.insertId;
+
+  // 创建老师
+  const teacherResult = await query('INSERT INTO teacher (Teacher_name, Gender, DOB, Address, Phone_number, Institution_name) VALUES (?, ?, ?, ?, ?, ?)', [Teacher_name, Gender, DOB, Address, Phone_number, Institution_name]);
+  const teacherId = teacherResult.insertId;
+
+  // 更新 user 表中的 teacher_id 列
+  await query('UPDATE user SET teacher_id = ? WHERE id = ?', [teacherId, userId]);
+}
+
 
 // calculate age
 function calculateAge(dob) {
@@ -46,4 +64,4 @@ function calculateAge(dob) {
   return age;
 }
 
-module.exports = { login, register, calculateAge };
+module.exports = { login, calculateAge, registerTeacher, registerStudent };

@@ -1,0 +1,44 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 老师注册页面
+    link(rel="stylesheet" href="/styles/registerstyles.css")
+  body.login-background
+    .top-right-image
+      img(src="/images/cloud.png" alt="Top Right Image")
+    .login-box
+      h1 老师注册
+      form(action="/register/teacher" method="post")
+        div
+          label(for="username") 用户名
+          input(type="text" id="username" name="username" required)
+        div
+          label(for="password") 密码
+          input(type="password" id="password" name="password" required)
+        div
+          label(for="Teacher_name") 老师姓名
+          input(type="text" id="Teacher_name" name="Teacher_name" required)
+        div
+          label(for="Gender") 性别
+          select(id="Gender" name="Gender" required)
+            option(value="" disabled selected) 选择性别
+            option(value="male") 男
+            option(value="female") 女
+        div
+          label(for="DOB") 出生日期
+          input(type="date" id="DOB" name="DOB" required)
+        div
+          label(for="Address") 地址
+          input(id="Address" name="Address" rows="3" required)
+        div
+          label(for="Phone_number") 联系电话
+          input(type="tel" id="Phone_number" name="Phone_number" required)
+        div
+          label(for="Institution_name") 工作机构
+          input(type="text" id="Institution_name" name="Institution_name")
+        div
+          button(type="submit") 注册
+        div
+          a(href="/login") 已有账户？登录

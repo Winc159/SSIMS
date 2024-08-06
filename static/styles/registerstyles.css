@@ -29,6 +29,9 @@ body {
     color: #456D00; /* 修改字体颜色并添加分号 */
     z-index: 1;
     width: 400px; /* 设置登录框的宽度 */
+    position: relative;
+    top: 70%; /* 调整距离顶部的距离 */
+    transform: translateY(-30%); /* 垂直居中 */
   }
   
   .login-box .top-image {

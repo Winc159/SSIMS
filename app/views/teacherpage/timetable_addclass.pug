@@ -1,0 +1,36 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title 添加课程
+    link(rel="stylesheet" href="/styles/teacherstyles/timetable_edit.css")
+  body.teacher-background
+    .container
+      h1 添加课程
+      form(action="/teacher/add-timetable" method="post")
+        div
+          label(for="course_id") 选择课程
+          select(id="course_id" name="course_id" required)
+            option(value="", disabled selected) 选择课程
+            each course in courses
+              option(value=course.id) #{course.course_name}
+        div
+          label(for="class_time") 课程时间 (yyyy-mm-dd HH:MM)
+          input(type="datetime-local" id="class_time" name="class_time" required)
+        div
+          label(for="class_room") 教室
+          input(type="text" id="class_room" name="class_room" required)
+        div
+          label(for="teacher_id") 选择教师
+          select(id="teacher_id" name="teacher_id" required)
+            option(value="", disabled selected) 选择教师
+            each teacher in teachers
+              option(value=teacher.id) #{teacher.name}
+        div
+          label(for="student_ids") 选择学生
+          select(id="student_ids" name="student_ids" multiple required)
+            each student in students
+              option(value=student.id) #{student.name}
+        div
+          button(type="submit") 添加课程
