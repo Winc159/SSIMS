@@ -1,9 +1,17 @@
 "use strict";
 
-process.on('uncaughtException', (err) => {
-    console.error('发生了未捕获的错误', err);
-    process.exit(1); // 强制退出（根据 Node.js 文档）
+// 定义关闭服务器的函数
+function closeServer() {
+  server.close(() => {
+    console.log('服务器已关闭');
   });
+}
+
+process.on('uncaughtException', (err) => {
+  console.error('发生了未捕获的错误:', err.message);
+  console.error('堆栈信息:', err.stack);
+  process.exit(1);
+});
   
   process.on('SIGTERM', () => {
     console.log('接收到 SIGTERM 信号，优雅地关闭进程');

@@ -10,8 +10,8 @@ const path = require('path');
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+  console.error('全局错误处理:', err.stack);
+  res.status(500).send('出现了问题！');
 });
 
 // Add static files location
@@ -65,6 +65,8 @@ app.get("/login", function(req, res) {
 // 处理登录表单提交
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+
+    console.log('登录请求:', { username });
     
     try {
       const user = await login(username, password);
@@ -79,6 +81,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/student/interface');
       }
     } catch (err) {
+      console.error('登录失败:', err);
       res.status(401).send(err.message);
     }
   });
@@ -166,7 +169,7 @@ app.get('/student/info', async (req, res) => {
         return res.status(404).send('学生信息未找到');
       }
   
-      const studentInfo = studentRows;
+      const studentInfo = studentRows[0];
   
       // 格式化DOB为"yyyy-MM-dd"
       const dob = new Date(studentInfo.DOB);
@@ -186,11 +189,14 @@ app.post('/student/update-info', async (req, res) => {
       const studentId = req.session.studentId;
   
       if (!studentId) {
+        console.warn('未找到 studentId, 重定向到登录页');
         return res.redirect('/login');
       }
   
       const { student_name, gender, DOB, symptoms, Address_City, Address_District, Address_detail } = req.body;
   
+      console.log('更新学生信息:', { studentId, student_name, gender, DOB });
+
       // 更新学生信息
       await db.query(
         'UPDATE student SET Student_name = ?, gender = ?, DOB = ?, symptoms = ?, Address_City = ?, Address_District = ?, Address_detail = ? WHERE student_id = ?',
@@ -199,7 +205,7 @@ app.post('/student/update-info', async (req, res) => {
   
       res.redirect('/student/interface');
     } catch (err) {
-      console.error('Error updating student info:', err);
+      console.error('更新学生信息时出错:', err);
       res.status(500).send('服务器内部错误');
     }
 });
@@ -212,8 +218,11 @@ app.get('/student/timetable', async (req, res) => {
         const studentId = req.session.studentId;
 
         if (!userId || !studentId) {
+            console.warn('用户未登录，重定向到登录页');
             return res.redirect('/login');
         }
+
+        console.log('查询学生课表, 学生ID:', studentId);
 
         // 查询课程安排和教师信息
         const courseRows = await db.query(
@@ -232,7 +241,7 @@ app.get('/student/timetable', async (req, res) => {
             [studentId]
         );
 
-        console.log('Course rows:', courseRows); // 输出查询结果
+        console.log('课程数据:', courseRows); // 输出查询结果
 
         // 格式化课程信息
         const courses = courseRows.map(row => {
@@ -332,12 +341,12 @@ app.get('/teacher/info', async (req, res) => {
       return res.status(404).send('教师信息未找到');
     }
 
-    const teacherInfo = teacherRows;
+    const teacherInfo = teacherRows[0];
 
     // 格式化DOB为"yyyy-MM-dd"
     const dob = new Date(teacherInfo.DOB);
-    teacherInfo.formattedDOB = dob.toISOString().split('T')[0]; // 提取并格式化日期部分
-
+    teacherInfo.formattedDOB = !isNaN(dob.getTime()) ? dob.toISOString().split('T')[0] : '无效日期';
+    console.log('Teacher Info:', teacherInfo);
     // 渲染教师信息编辑页面，并传递教师信息
     res.render('teacherpage/info', { teacher: teacherInfo });
   } catch (err) {

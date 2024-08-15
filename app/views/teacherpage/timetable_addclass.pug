@@ -6,9 +6,11 @@ html(lang="en")
     title 添加课程
     link(rel="stylesheet" href="/styles/teacherstyles/timetable_edit.css")
   body.teacher-background
+    a(href="/teacher/timetable" class="back-button")
+      img(src="/images/backbutton.png" alt="Back Button")
     .container
       h1 添加课程
-      form(action="/teacher/add-timetable" method="post")
+      form(action="/teacher/add_timetable" method="post")
         div
           label(for="course_id") 选择课程
           select(id="course_id" name="course_id" required)
