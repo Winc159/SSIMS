@@ -9,21 +9,38 @@ const config = {
     password: process.env.MYSQL_ROOT_PASSWORD,
     database: process.env.MYSQL_DATABASE,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 9,
     queueLimit: 0,
   },
 };
 
 const pool = mysql.createPool(config.db);
 
+// Log the connection configuration for debugging
+console.log('Database connection pool created with config:', config.db);
+
 async function query(sql, params) {
   try {
+    // Log the SQL query and parameters
+    console.log('Executing query:', sql);
+    console.log('With parameters:', params);
+
     const [rows] = await pool.execute(sql, params);
-    console.log('Query result:', rows); // 打印返回的结果
-    return rows; // 直接返回 rows，而不是 `[rows]`
+    
+    // Log the result
+    console.log('Query result:', rows);
+
+    return rows;
   } catch (err) {
+    // Log detailed error information
     console.error('Query error:', err.message);
-    throw err;
+    console.error('SQL query:', sql);
+    console.error('Parameters:', params);
+
+    // Optionally, log the stack trace
+    console.error('Stack trace:', err.stack);
+
+    throw err; // Re-throw the error after logging it
   }
 }
 

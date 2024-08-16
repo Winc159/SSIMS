@@ -21,15 +21,15 @@ app.use(express.static("static"));
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    rolling: true,
     store: new session.MemoryStore(), // 存储会话数据的方式
-    cookie: { secure: false } // 允许在非 HTTPS 环境下使用
+    cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 允许在非 HTTPS 环境下使用
 }));
 
 // 使用 body-parser 解析请求体
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'static')));
 
 // 设置 Pug 作为模板引擎
 app.set('view engine', 'pug');
