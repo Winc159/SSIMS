@@ -1,23 +1,21 @@
-# 使用 Node.js v20 作为基础镜像
-FROM node:20
+# Base image to use
+FROM node:latest
 
-# 设置工作目录
+# set a working directory
 WORKDIR /src
 
-# 复制 package.json 和 package-lock.json（如果有）
+# Copy across project configuration information
+# Install application dependencies
 COPY package*.json /src/
 
-# 安装全局 supervisor 和应用依赖
-RUN npm install -g supervisor && npm install
+# Ask npm to install the dependencies
+RUN npm install -g supervisor && npm install && npm install supervisor
 
-# 复制所有源文件
+# Copy across all our files
 COPY . /src
 
-# 暴露应用端口
+# Expose our application port (3000)
 EXPOSE 3000
-
-# 启动应用程序
-CMD ["supervisor", "-w", ".", "app.js"]
 
 
 
